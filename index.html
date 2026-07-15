@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capstone: GDP & Sentiment Analysis</title>
+    <style>
+        /* Applying Cascadua Code with a fallback to monospace */
+        body { 
+            font-family: 'Cascadia Code', 'Courier New', Courier, monospace; 
+            line-height: 1.6; 
+            color: #083358; 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background-color: #f4f7f6; 
+        }
+        header { 
+            text-align: center; 
+            padding: 60px 20px; 
+            background: #001F3F; 
+            color: #FFD717; 
+            border-radius: 8px; 
+            margin-bottom: 30px; 
+        }
+        h1 { 
+            margin: 0; 
+            font-size: 2.2em; 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+        }
+        .section { 
+            background: white; 
+            padding: 30px; 
+            margin-bottom: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+        h2 { 
+            color: #0D63A5; 
+            border-bottom: 2px solid #FFD717; 
+            padding-bottom: 10px; 
+            text-transform: uppercase;
+        }
+        h3 { color: #001F3F; margin-top: 25px; text-transform: uppercase; font-size: 1.1em;}
+        .graph-container { text-align: center; margin: 25px 0; }
+        img { max-width: 100%; height: auto; border-radius: 4px; border: 1px solid #0D63A5; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }
+        .stat-card { background: #f0f4f8; padding: 20px; border-left: 5px solid #0D63A5; border-radius: 4px; }
+        .conclusion { background: #e8f4fd; border: 1px solid #0D63A5; padding: 25px; border-radius: 8px; margin-top: 30px; }
+        .metric { font-size: 1.5em; font-weight: bold; color: #083358; }
+        .variable-list { list-style: none; padding: 0; }
+        .variable-list li { margin-bottom: 15px; padding-left: 20px; border-left: 3px solid #FFD717; }
+        .variable-name { font-weight: bold; color: #0D63A5; }
+        footer { text-align: center; padding: 40px 20px; background: #001F3F; color: white; border-radius: 8px; margin-top: 40px; }
+        .source-tag { display: inline-block; background: #0D63A5; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>DOES POPULATION SENTIMENT PLAY A ROLE IN A COUNTRY'S GDP?</h1>
+    <p>A Time-Series Analysis of Nepal using GDELT and World Bank Data</p>
+</header>
+
+<div class="section">
+    <h2>THE ANALYTICAL APPROACH: VECTOR AUTOREGRESSION (VAR)</h2>
+    <p>In this study, I utilized a <strong>Vector Autoregression (VAR)</strong> model to capture the complex, bidirectional relationships between economic indicators and news sentiment. Unlike simple regression, VAR treats every variable as "endogenous," meaning they all influence each other over time.</p>
+    
+    <h3>THE ROLE OF TIME LAGS</h3>
+    <p>I implemented a <strong>1-Year Time Lag (Lag 1)</strong> for this model. This decision was based on the Akaike Information Criterion (AIC) and Bayesian Information Criterion (BIC) results, which indicated that the most significant predictive power comes from the immediate preceding year. This means the model uses data from year <em>t-1</em> to predict year <em>t</em>, capturing how last year's sentiment and tourism receipts manifest in this year's economic output.</p>
+</div>
+
+<div class="section">
+    <h2>EXPLORATORY DATA ANALYSIS</h2>
+    <p>To understand the economic landscape of Nepal, I analyzed multiple dimensions of national health. Below are the historical trends of the primary indicators I used in my model.</p>
+    
+    <div class="graph-container">
+        <img src="nepal_economic_subplots.png" alt="Nepal Economic Subplots">
+        <p><em>Figure 1: Multi-dimensional trends of Nepal's Economy (1991-2024).</em></p>
+    </div>
+
+    <h3>VARIABLE DEFINITIONS & TRENDS</h3>
+    <ul class="variable-list">
+        <li><span class="variable-name">GDP PER CAPITA (USD):</span> My primary target variable, representing the average economic output per person. <span class="source-tag">World Bank Data</span></li>
+        <li><span class="variable-name">WEIGHTED AVERAGE TONE:</span> Represents the average "sentiment" of global news coverage regarding Nepal. <span class="source-tag">GDELT Project</span></li>
+        <li><span class="variable-name">REMITTANCES (% OF GDP):</span> Funds sent home by citizens working abroad; a major driver of domestic liquidity. <span class="source-tag">World Bank Data</span></li>
+        <li><span class="variable-name">TOURISM RECEIPTS:</span> Tracks spending by international visitors, highly sensitive to safety perceptions. <span class="source-tag">World Bank Data</span></li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>SENTIMENT VS. ECONOMIC GROWTH</h2>
+    <div class="graph-container">
+        <img src="gdpvtone.png" alt="GDP vs Tone">
+        <p><em>Figure 2: Overlay of GDP Growth and News Sentiment Trends.</em></p>
+    </div>
+    <p><strong>OBSERVATIONS:</strong> While GDP exhibits smooth growth, news tone is a high-frequency indicator. I observed that news tone often acts as a precursor to social or political shifts that eventually impact long-term economic stability.</p>
+</div>
+
+<div class="section">
+    <h2>MODEL VALIDATION & FORECAST</h2>
+    <p>I trained the VAR model on historical data up to 2022. I then conducted a multi-step forecast for 2023 and 2024 to test its real-world utility against actual recorded values.</p>
+    
+    <div class="graph-container">
+        <img src="actualvsvar.png" alt="Actual vs Predicted GDP">
+        <p><em>Figure 3: Predicted vs. Actual GDP Performance (Hugging the Trend).</em></p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>2023 VALIDATION</h3>
+            <p class="metric">7.86% ERROR</p>
+            <p>I achieved high precision in capturing the immediate economic trajectory.</p>
+        </div>
+        <div class="stat-card">
+            <h3>2024 TEST</h3>
+            <p class="metric">8.12% ERROR</p>
+            <p>The performance remained robust even during my extended forecasting horizon.</p>
+        </div>
+        <div class="stat-card">
+            <h3>SYSTEM ACCURACY</h3>
+            <p class="metric">7.99% MAPE</p>
+            <p>Mean Absolute Percentage Error across my test window.</p>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>CAUSALITY & FINAL FINDINGS</h2>
+    <p>I applied Granger Causality tests to investigate the predictive relationship between Media Tone and the Economy in both directions.</p>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>TONE &rarr; GDP</h3>
+            <p><strong>P-VALUE: 0.8792</strong></p>
+            <p>I found that news sentiment does not possess a statistically significant predictive lead over GDP at this interval.</p>
+        </div>
+        <div class="stat-card">
+            <h3>GDP &rarr; TONE (INVERSE)</h3>
+            <p><strong>P-VALUE: 0.4125</strong></p>
+            <p>Economic growth similarly does not statistically lead to more positive news coverage in this model.</p>
+        </div>
+    </div>
+
+    <div class="graph-container">
+        <img src="impulse.png" alt="Impulse Response Function">
+        <p><em>Figure 4: Impulse Response Function (IRF) showing GDP's reaction to a sentiment 'shock'.</em></p>
+    </div>
+
+    <div class="conclusion">
+        <h3>CONCLUSION</h3>
+        <p>My research concludes that in Nepal's context, <strong>Population Sentiment is not a causal driver</strong> of GDP. The $p$-values of 0.8792 and 0.4125 confirm that the two variables do not have a strong lead-lag relationship at an annual interval. </p>
+        <p>However, the <strong>high predictive accuracy (~8% error)</strong> I achieved suggests that while Tone is not a <em>cause</em>, it is a <strong>significant feature</strong> for stabilizing economic models. Sentiment acts as a real-time signal of the environment, aiding in the accurate mapping of economic momentum.</p>
+    </div>
+</div>
+
+<footer>
+    <p><strong>DATA SOURCES:</strong></p>
+    <p>ECONOMIC INDICATORS: World Bank Open Data</p>
+    <p>NEWS SENTIMENT INDICES: The GDELT Project</p>
+    <hr style="width: 50%; border: 0.5px solid #FFD717; margin: 20px auto;">
+    <p>Manish Gurung | Drexel University Data Science | 2026</p>
+</footer>
+
+</body>
+</html>
